@@ -10,7 +10,7 @@
 ** - fd[2]: pipe verso il prossimo comando
 ** - has_next_cmd: indica se esiste un comando successivo
 */
-static void	execute_child(char **cmd, int prev, int fd[2], int has_next_cmd)
+void	execute_child(char **cmd, int prev, int fd[2], int has_next_cmd)
 {
 	/* stdin <- pipe precedente */
 	if (prev != -1)
@@ -42,8 +42,8 @@ static void	execute_child(char **cmd, int prev, int fd[2], int has_next_cmd)
 **   0 -> success
 **   1 -> error
 */
-static int	fork_execute(char **cmd, int *prev,
-				int fd[2], int has_next_cmd)
+int	fork_execute(char **cmd, int *prev,
+			int fd[2], int has_next_cmd)
 {
 	pid_t	pid;
 
