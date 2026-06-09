@@ -1,3 +1,7 @@
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 int	ft_popen(const char *file, char *const argv[], char type)
 {
 	int		fd[2];
