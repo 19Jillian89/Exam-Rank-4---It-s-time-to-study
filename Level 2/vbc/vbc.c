@@ -1,61 +1,74 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include "vbc.h"
 
-char	*s;
+char* input_char;
 
-void	error(char c)
+void error(char non_char)
 {
-	if (c) printf("Unexpected token '%c'\n", c);
-	else printf("Unexpected end of input\n");
-	exit(1);
+    if (unexpected_char)
+        printf("Unexpected token '%c'\n", unexpected_char);
+    else
+        printf("Unexpected end of input\n");
+    exit(1);
 }
 
 int expr();
-int term();
-int factor();
 
-int	factor()
+int factor()
 {
-	if (isdigit(*s)) return (*s++ - '0');
-	if (*s == '(') {
-		s++;
-		int val = expr();
-		if (*s != ')') error(*s);
-		s++;
-		return (val);
-	}
-	else error(*s);
-	return (0);
+    int value;
+
+    if (*input_char == '\0')
+    error('\0');
+    
+    if (isdigit(*input_char))
+        return *input_char++ - '0';
+    if (*input_char == '(') {
+        input_char++;
+        value = expr();
+        if (*input_char != ')')
+            error(*input_char);
+        input_char++;
+        return value;
+    }
+    error(*input_char);
+    return 0;
 }
 
-int	term()
+int term()
 {
-	int val = factor();
-	while (*s == '*') {
-		s++;
-		val *= factor();
-	}
-	return (val);
+    int value = factor();
+
+    while (*input_char == '*') {
+        input_char++;
+        value *= factor();
+    }
+    return value;
 }
 
-int	expr()
+int expr()
 {
-	int val = term();
-	while (*s == '+') {
-		s++;
-		val += term();
-	}
-	return (val);
+    int value = term();
+
+    while (*input_char == '+') {
+        input_char++;
+        value += term();
+    }
+    return value;
 }
 
-int	main(int argc, char **argv)
+int main(int ac, char** av)
 {
-	if (argc != 2) return (1);
-	s = argv[1];
-	int result = expr();
-	if (*s) error(*s);
-	printf("%d\n", result);
-	return (0);
-}
+    int result;
 
+    if (ac != 2)
+        return 1;
+
+    input_char = av[1];
+    result = expr();
+
+    if (*input_char)
+        error(*input_char);
+
+    printf("%d\n", result);
+    return 0;
+}
